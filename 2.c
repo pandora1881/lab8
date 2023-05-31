@@ -1,88 +1,78 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Функція для введення елементів масиву
-void inputArray(int *array, int size)
-{
+void inputArray(int* arr, int n) {
     printf("Введіть елементи масиву:\n");
-    for (int i = 0; i < size; i++)
-    {
+    for (int i = 0; i < n; i++) {
         printf("Елемент %d: ", i + 1);
-        scanf("%d", &array[i]);
+        scanf("%d", &arr[i]);
     }
 }
 
-// Функція для виведення елементів масиву
-void outputArray(int *array, int size)
-{
-    printf("Елементи масиву:\n");
-    for (int i = 0; i < size; i++)
-    {
-        printf("%d ", array[i]);
+void printArray(const int* arr, int n) {
+    printf("Масив:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
     }
     printf("\n");
 }
 
-// Функція для обчислення кількості від'ємних елементів з непарними індексами
-int countNegativeOddIndices(int *array, int size)
-{
+int countNegativeOddIndex(const int* arr, int n) {
     int count = 0;
-    for (int i = 1; i < size; i += 2)
-    {
-        if (array[i] < 0)
-        {
+    for (int i = 1; i < n; i += 2) {
+        if (arr[i] < 0) {
             count++;
         }
     }
     return count;
 }
 
-// Функція для обчислення добутку елементів масиву, розташованих після мінімального за модулем елемента
-int productAfterMinAbsolute(int *array, int size)
-{
-    int minIndex = 0;
-    for (int i = 1; i < size; i++)
-    {
-        if (abs(array[i]) < abs(array[minIndex]))
-        {
-            minIndex = i;
+int findMinAbsElement(const int* arr, int n) {
+    int minAbs = abs(arr[0]);
+    for (int i = 1; i < n; i++) {
+        if (abs(arr[i]) < minAbs) {
+            minAbs = abs(arr[i]);
         }
     }
+    return minAbs;
+}
 
-    int product = 1;
-    for (int i = minIndex + 1; i < size; i++)
-    {
-        product *= array[i];
+long long computeProductAfterMinAbs(const int* arr, int n) {
+    int minAbs = findMinAbsElement(arr, n);
+    int minIndex = 0;
+    while (abs(arr[minIndex]) != minAbs) {
+        minIndex++;
+    }
+    
+    long long product = 1;
+    for (int i = minIndex + 1; i < n; i++) {
+        product *= arr[i];
     }
     return product;
 }
 
-int main()
-{
+int main() {
     int n;
-
     printf("Введіть розмір масиву: ");
     scanf("%d", &n);
-
-    // Виділення пам'яті під масив
-    int *array = (int *)malloc(n * sizeof(int));
-
-    // Введення елементів масиву
+    
+    int* array = (int*)malloc(n * sizeof(int));
+    
+    if (array == NULL) {
+        printf("Не вдалося виділити пам'ять для масиву.\n");
+        return 1;
+    }
+    
     inputArray(array, n);
-
-    // Виведення елементів масиву
-    outputArray(array, n);
-
-    // Обчислення та виведення кількості від'ємних елементів з непарними індексами
-    int negativeOddCount = countNegativeOddIndices(array, n);
-    printf("Кількість від'ємних елементів з непарними індексами: %d\n", negativeOddCount);
-
-    // Обчислення та виведення добутку елементів масиву, розташованих після мінімального за модулем елемента
-    int product = productAfterMinAbsolute(array, n);
-    printf("Добуток елементів масиву, розташованих після мінімального за модулем елемента: %d\n", product);
-
-    // Звільнення пам'яті
+    printArray(array, n);
+    
+    int count = countNegativeOddIndex(array, n);
+    printf("Кількість від'ємних елементів масиву з непарними індексами: %d\n", count);
+    
+    long long product = computeProductAfterMinAbs(array, n);
+    printf("Добуток елементів масиву, розташованих після мінімального за модулем елемента: %lld\n", product);
+    
     free(array);
-
+    
     return 0;
 }
